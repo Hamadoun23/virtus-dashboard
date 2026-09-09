@@ -20,7 +20,7 @@ export function Sidebar() {
           <span className="text-lg font-black">↗</span>
         </div>
         <div className="leading-tight">
-          <p className="text-lg font-extrabold text-white">GDA Hub</p>
+          <p className="font-display text-lg font-bold tracking-tight text-white">GDA Hub</p>
           <p className="text-xs text-muted">Espace connecté</p>
         </div>
       </div>

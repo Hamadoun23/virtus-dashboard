@@ -53,7 +53,7 @@ export function PerformanceSection() {
               >
                 <Icon size={15} color={tile.tint} />
               </div>
-              <p className="text-lg font-extrabold text-white">{tile.value}%</p>
+              <p className="font-display text-lg font-bold tabular-nums text-white">{tile.value}%</p>
               <p className="text-[11px] leading-tight text-muted">{tile.label}</p>
             </div>
           );

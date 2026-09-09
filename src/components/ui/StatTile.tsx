@@ -20,7 +20,7 @@ export function StatTile({
       >
         <Icon size={15} color={teinte} />
       </span>
-      <p className="text-xl font-extrabold text-white">{valeur}</p>
+      <p className="font-display text-xl font-bold tabular-nums text-white">{valeur}</p>
       <p className="text-xs text-muted">{libelle}</p>
     </Card>
   );

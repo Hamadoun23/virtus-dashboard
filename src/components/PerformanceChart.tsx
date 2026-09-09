@@ -93,7 +93,7 @@ export function PerformanceChart() {
 
       {highPoints.length > 0 && (
         <div
-          className="absolute rounded-lg bg-accentDeep px-2 py-1 text-xs font-bold text-white shadow-lg"
+          className="absolute rounded-lg bg-accentDeep px-2 py-1 font-display text-xs font-bold tabular-nums text-white shadow-lg"
           style={{ left: Math.min(Math.max(peak.x - 18, 0), width - 44), top: peak.y - 34 }}
         >
           85%

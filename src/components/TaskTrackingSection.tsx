@@ -25,7 +25,7 @@ export function TaskTrackingSection() {
           <div className="flex items-center gap-4">
             <CircularProgress progress={67} size={72} strokeWidth={7} gradientId="projectGradient" />
             <div>
-              <p className="text-2xl font-extrabold text-white">67%</p>
+              <p className="font-display text-2xl font-bold tabular-nums text-white">67%</p>
               <p className="text-xs text-muted">Avancement global</p>
             </div>
           </div>
@@ -54,7 +54,7 @@ export function TaskTrackingSection() {
             <p className="text-sm font-bold text-white">Refonte du réseau</p>
             <p className="text-xs text-muted">Design • Productivité</p>
           </div>
-          <p className="text-xl font-extrabold text-white">2/3</p>
+          <p className="font-display text-xl font-bold tabular-nums text-white">2/3</p>
           <ProgressBar progress={66} />
           <button className="mt-1 flex items-center justify-center gap-1.5 rounded-xl border border-border bg-surface2 px-3 py-2.5 text-xs font-bold text-white">
             Voir les détails

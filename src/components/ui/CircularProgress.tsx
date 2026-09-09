@@ -41,7 +41,9 @@ export function CircularProgress({
         />
       </svg>
       <div className="absolute flex items-center justify-center">
-        <span className="text-lg font-bold text-white">{label ?? `${Math.round(clamped)}%`}</span>
+        <span className="font-display text-lg font-bold tabular-nums text-white">
+          {label ?? `${Math.round(clamped)}%`}
+        </span>
       </div>
     </div>
   );

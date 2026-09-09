@@ -90,7 +90,7 @@ export function AboutYouSection() {
                   <p className="text-xs text-muted">{goal.subtitle}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-base font-extrabold text-white">{goal.progress}%</span>
+                  <span className="font-display text-base font-bold tabular-nums text-white">{goal.progress}%</span>
                   <CheckCircle2 size={16} className="text-emerald-400" />
                 </div>
               </div>

@@ -14,7 +14,7 @@ export default function Connexion() {
             <span className="text-lg font-black">↗</span>
           </div>
           <div>
-            <p className="text-lg font-extrabold text-white">GDA Hub</p>
+            <p className="font-display text-lg font-bold tracking-tight text-white">GDA Hub</p>
             <p className="text-xs text-muted">Un compte, tout le groupe</p>
           </div>
         </div>
