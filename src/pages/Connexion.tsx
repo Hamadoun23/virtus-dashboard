@@ -4,8 +4,11 @@ export default function Connexion() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-bg px-4">
-      <div className="w-full max-w-sm rounded-3xl border border-border bg-surface p-8">
+    <div
+      className="flex min-h-screen items-center justify-center bg-cover bg-center px-4"
+      style={{ backgroundImage: "url('/motif-orange.jpg')" }}
+    >
+      <div className="w-full max-w-sm rounded-3xl border border-border bg-surface p-8 backdrop-blur-xl">
         <div className="mb-6 flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent text-black">
             <span className="text-lg font-black">↗</span>

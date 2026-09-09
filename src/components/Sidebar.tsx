@@ -14,7 +14,7 @@ export function Sidebar() {
   const [lightMode, setLightMode] = useState(false);
 
   return (
-    <aside className="flex h-screen w-72 shrink-0 flex-col overflow-hidden border-r border-border bg-surface">
+    <aside className="flex h-screen w-72 shrink-0 flex-col overflow-hidden border-r border-border bg-surface backdrop-blur-xl">
       <div className="flex items-center gap-2 px-5 py-5">
         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent text-black">
           <span className="text-lg font-black">↗</span>
