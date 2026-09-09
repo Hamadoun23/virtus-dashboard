@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Eye, EyeOff, Globe, MapPin, Phone } from 'lucide-react';
+import { ArrowRight, Eye, EyeOff, Globe, Lock, Mail, MapPin, Phone } from 'lucide-react';
 
 const PHOTOS = ['/login-1.jpg', '/login-2.jpg'];
 
@@ -37,20 +37,16 @@ export default function Connexion() {
           style={{ background: 'radial-gradient(circle, #ff6a2b, transparent 70%)' }}
         />
 
-        <div className="relative flex h-full flex-col justify-between p-12">
-          <span className="w-fit rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/85 backdrop-blur-sm">
-            Groupe GDA
-          </span>
-
+        <div className="relative flex h-full flex-col justify-end p-12">
           <div className="max-w-lg">
             <h1 className="font-display text-[2.75rem] font-bold leading-[1.05] text-white">
-              Un compte,
+              Bienvenue sur
               <br />
-              tout le groupe.
+              GDA Hub.
             </h1>
             <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-white/75">
-              RH, Finance, Jus d'orange, Chantiers, Planning — une seule connexion pour circuler
-              entre toutes les applications de GDA.
+              L'espace de travail qui réunit chaque métier du groupe, dans une seule et même
+              connexion.
             </p>
 
             <div className="mt-8 flex items-center gap-5">
@@ -86,15 +82,21 @@ export default function Connexion() {
         </div>
       </div>
 
-      {/* Volet droit : formulaire de connexion. */}
-      <div className="relative flex flex-1 items-center justify-center px-6">
-        <div className="w-full max-w-[380px]">
-          <span className="mb-8 block font-display text-sm font-bold uppercase tracking-[0.2em] text-accent2 lg:hidden">
+      {/* Volet droit : formulaire de connexion, plein cadre sur le motif de marque GDA. */}
+      <div
+        className="relative flex flex-1 items-center justify-center overflow-hidden bg-cover bg-center px-10"
+        style={{ backgroundImage: "url('/motif-orange.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-black/45" />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/25 via-transparent to-black/40" />
+
+        <div className="relative w-full max-w-[400px]">
+          <span className="mb-7 block font-display text-sm font-bold uppercase tracking-[0.2em] text-accent2 lg:hidden">
             GDA Hub
           </span>
 
-          <h2 className="font-display text-[1.75rem] font-bold text-white">Bon retour</h2>
-          <p className="mt-1.5 text-sm text-muted">Connectez-vous à votre espace GDA Hub</p>
+          <h2 className="font-display text-[1.75rem] font-bold text-white drop-shadow-sm">Bon retour</h2>
+          <p className="mt-1.5 text-sm text-white/75">Connectez-vous à votre espace GDA Hub</p>
 
           <form
             className="mt-8 flex flex-col gap-4"
@@ -104,25 +106,29 @@ export default function Connexion() {
             }}
           >
             <div>
-              <label className="mb-1.5 block text-xs font-semibold text-muted">Adresse professionnelle</label>
-              <input
-                type="email"
-                placeholder="prenom.nom@gdamali.net"
-                className="w-full rounded-xl border border-border bg-surface2 px-3.5 py-3 text-sm text-white placeholder:text-muted/70 transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
-              />
+              <label className="mb-1.5 block text-xs font-semibold text-white/80">Adresse professionnelle</label>
+              <div className="relative">
+                <Mail size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
+                <input
+                  type="email"
+                  placeholder="prenom.nom@gdamali.net"
+                  className="w-full rounded-xl border border-border bg-surface2 py-3 pl-10 pr-3.5 text-sm text-white placeholder:text-muted/70 transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                />
+              </div>
             </div>
             <div>
               <div className="mb-1.5 flex items-center justify-between">
-                <label className="text-xs font-semibold text-muted">Mot de passe</label>
+                <label className="text-xs font-semibold text-white/80">Mot de passe</label>
                 <button type="button" className="text-xs font-semibold text-accent2 hover:text-accent">
                   Mot de passe oublié ?
                 </button>
               </div>
               <div className="relative">
+                <Lock size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
                 <input
                   type={motDePasseVisible ? 'text' : 'password'}
                   placeholder="••••••••"
-                  className="w-full rounded-xl border border-border bg-surface2 px-3.5 py-3 pr-10 text-sm text-white placeholder:text-muted/70 transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  className="w-full rounded-xl border border-border bg-surface2 py-3 pl-10 pr-10 text-sm text-white placeholder:text-muted/70 transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
                 />
                 <button
                   type="button"
@@ -134,7 +140,7 @@ export default function Connexion() {
               </div>
             </div>
 
-            <label className="mt-1 flex w-fit items-center gap-2 text-xs text-muted">
+            <label className="mt-1 flex w-fit items-center gap-2 text-xs text-white/75">
               <input type="checkbox" className="h-3.5 w-3.5 rounded border-border bg-surface2 accent-accent" />
               Rester connecté
             </label>
@@ -148,7 +154,7 @@ export default function Connexion() {
             </button>
           </form>
 
-          <p className="mt-8 text-center text-xs text-muted">
+          <p className="mt-8 text-center text-xs text-white/60">
             Accès réservé aux collaborateurs GDA · besoin d'aide ? contactez votre administrateur.
           </p>
         </div>
