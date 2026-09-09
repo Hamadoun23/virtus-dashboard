@@ -1,25 +1,43 @@
 import { AlertTriangle, Calendar, ClipboardList, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
+import { EtatChargement, EtatErreur } from '../../components/ui/EtatRequete';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { StatTile } from '../../components/ui/StatTile';
 import { Badge } from '../../components/ui/Table';
-import { aValiderRh, soldeConges } from './donnees';
+import { useAuth } from '../../lib/auth/AuthContext';
+import { useApi } from '../../lib/hooks/useApi';
+import { demandesAValider, monSolde } from '../../lib/api/rh';
 
 export default function TableauDeBordRh() {
+  const { utilisateur } = useAuth();
+  const annee = new Date().getFullYear();
+  const dossiers = useApi(demandesAValider, []);
+  const solde = useApi(() => monSolde(annee), [annee]);
+
+  if (dossiers.chargement || solde.chargement) return <EtatChargement texte="Chargement du tableau de bord…" />;
+  if (dossiers.erreur) return <EtatErreur message={dossiers.erreur} recharger={dossiers.recharger} />;
+
+  const liste = dossiers.donnees ?? [];
+  const urgents = liste.filter((d) => d.categorie === 'RETARD' || d.categorie === 'PERMISSION').length;
+
   return (
     <div>
-      <PageHeader icon={Users} titre="RH & Finance" sousTitre="Ce qui attend votre décision" />
+      <PageHeader
+        icon={Users}
+        titre="RH & Finance"
+        sousTitre={utilisateur ? `Bonjour ${utilisateur.first_name}, voici ce qui attend votre décision` : 'Ce qui attend votre décision'}
+      />
 
       <div className="grid grid-cols-3 gap-4">
-        <StatTile icon={ClipboardList} valeur={aValiderRh.length} libelle="Dossiers à valider" teinte="#ff8a4c" />
+        <StatTile icon={ClipboardList} valeur={liste.length} libelle="Dossiers à valider" teinte="#ff8a4c" />
+        <StatTile icon={AlertTriangle} valeur={urgents} libelle="Retards / permissions" teinte="#f87171" />
         <StatTile
-          icon={AlertTriangle}
-          valeur={aValiderRh.filter((d) => d.urgent).length}
-          libelle="Urgents"
-          teinte="#f87171"
+          icon={Calendar}
+          valeur={solde.donnees ? `${solde.donnees.jours_restants} j` : '—'}
+          libelle="Solde de congés restant"
+          teinte="#34d399"
         />
-        <StatTile icon={Calendar} valeur={`${soldeConges.restant} j`} libelle="Solde de congés restant" teinte="#34d399" />
       </div>
 
       <Card className="mt-4">
@@ -30,22 +48,21 @@ export default function TableauDeBordRh() {
           </Link>
         </div>
         <div className="mt-4 space-y-2">
-          {aValiderRh.map((dossier) => (
-            <div
-              key={dossier.id}
-              className={`flex items-center justify-between rounded-2xl border p-3 ${
-                dossier.urgent ? 'border-red-500/30 bg-red-500/5' : 'border-border bg-surface2'
-              }`}
-            >
-              <div>
-                <p className="text-sm font-semibold text-white">{dossier.collaborateur}</p>
-                <p className="text-xs text-muted">
-                  {dossier.type} · {dossier.id} · depuis {dossier.depuis}
-                </p>
+          {liste.length === 0 ? (
+            <p className="py-6 text-center text-xs text-muted">Aucun dossier en attente de votre décision.</p>
+          ) : (
+            liste.slice(0, 6).map((dossier) => (
+              <div key={dossier.id} className="flex items-center justify-between rounded-2xl border border-border bg-surface2 p-3">
+                <div>
+                  <p className="text-sm font-semibold text-white">{dossier.demandeur_nom}</p>
+                  <p className="text-xs text-muted">
+                    {dossier.type_absence_libelle} · {dossier.numero} · {dossier.etape_courante_libelle}
+                  </p>
+                </div>
+                <Badge>{dossier.statut_libelle}</Badge>
               </div>
-              {dossier.urgent ? <Badge tone="danger">Urgent</Badge> : <Badge>En attente</Badge>}
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </Card>
     </div>

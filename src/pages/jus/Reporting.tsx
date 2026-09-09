@@ -1,22 +1,46 @@
-import { Boxes } from 'lucide-react';
+import { Boxes, ShoppingCart, Sprout, Wine } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
+import { EtatChargement, EtatErreur } from '../../components/ui/EtatRequete';
 import { PageHeader } from '../../components/ui/PageHeader';
-import { ProgressBar } from '../../components/ui/ProgressBar';
-import { reportingChaine } from './donnees';
+import { StatTile } from '../../components/ui/StatTile';
+import { useApi } from '../../lib/hooks/useApi';
+import { obtenirSummary } from '../../lib/api/jus';
+
+const MODULES = [
+  { chemin: '/jus/reporting/recolte', libelle: 'Récolte' },
+  { chemin: '/jus/reporting/appro', libelle: 'Approvisionnement' },
+  { chemin: '/jus/reporting/fabrication', libelle: 'Fabrication' },
+  { chemin: '/jus/reporting/emballage', libelle: 'Emballage' },
+  { chemin: '/jus/reporting/entrepot', libelle: 'Entrepôt' },
+  { chemin: '/jus/reporting/distribution', libelle: 'Distribution' },
+];
 
 export default function Reporting() {
+  const summary = useApi(obtenirSummary, []);
+
+  if (summary.chargement) return <EtatChargement texte="Chargement…" />;
+  if (summary.erreur || !summary.donnees) return <EtatErreur message={summary.erreur ?? 'Indisponible'} recharger={summary.recharger} />;
+
+  const { kpi } = summary.donnees;
+
   return (
     <div>
       <PageHeader icon={Boxes} titre="Jus d'orange — Reporting" sousTitre="Récolte, fabrication, distribution" />
-      <Card className="flex flex-col gap-5">
-        {reportingChaine.map((etape) => (
-          <div key={etape.etape} className="flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-white">{etape.etape}</span>
-              <span className="text-sm font-bold text-white">{etape.progression}%</span>
-            </div>
-            <ProgressBar progress={etape.progression} />
-          </div>
+
+      <div className="mb-4 grid grid-cols-3 gap-4">
+        <StatTile icon={Sprout} valeur={`${kpi.recolte_total} kg`} libelle="Récolte totale" teinte="#4ade80" />
+        <StatTile icon={Wine} valeur={kpi.bouteilles} libelle="Bouteilles" teinte="#a78bfa" />
+        <StatTile icon={ShoppingCart} valeur={`${kpi.ca_total} F`} libelle="Chiffre d'affaires" teinte="#34d399" />
+      </div>
+
+      <Card className="flex flex-col gap-2">
+        <h2 className="mb-2 text-sm font-bold text-white">Rapports par module</h2>
+        {MODULES.map((m) => (
+          <Link key={m.chemin} to={m.chemin} className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm text-white hover:bg-surface2">
+            {m.libelle}
+            <span className="text-xs text-accent2">Voir le détail →</span>
+          </Link>
         ))}
       </Card>
     </div>

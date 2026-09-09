@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import App from './App';
 import './index.css';
+import { AuthProvider } from './lib/auth/AuthContext';
+import { RequireAuth } from './components/RequireAuth';
 import Accueil from './pages/Accueil';
 import Administration from './pages/Administration';
 import Connexion from './pages/Connexion';
@@ -56,6 +58,15 @@ import Publications from './pages/planning/Publications';
 import TableauDeBordPlanning from './pages/planning/TableauDeBord';
 import Tournages from './pages/planning/Tournages';
 
+import CampagnesTableauDeBord from './pages/campagnes/TableauDeBord';
+import CampagnesVentes from './pages/campagnes/Ventes';
+import CampagnesEnrolements from './pages/campagnes/Enrolements';
+import CampagnesListe from './pages/campagnes/admin/Liste';
+import CampagnesCreer from './pages/campagnes/admin/Creer';
+import CampagnesDetail from './pages/campagnes/admin/Detail';
+import CampagnesPerformances from './pages/campagnes/Performances';
+import CampagnesMonContrat from './pages/campagnes/MonContrat';
+
 import Absences from './pages/rh/Absences';
 import Annuaire from './pages/rh/Annuaire';
 import Historique from './pages/rh/Historique';
@@ -63,6 +74,7 @@ import MesDemandes from './pages/rh/MesDemandes';
 import MonEspace from './pages/rh/MonEspace';
 import Organisation from './pages/rh/Organisation';
 import Permissions from './pages/rh/Permissions';
+import Presences from './pages/rh/Presences';
 import Retards from './pages/rh/Retards';
 import TableauDeBordRh from './pages/rh/TableauDeBord';
 import Validations from './pages/rh/Validations';
@@ -70,11 +82,13 @@ import Validations from './pages/rh/Validations';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HashRouter>
-      <Routes>
-        <Route path="/connexion" element={<Connexion />} />
+      <AuthProvider>
+        <Routes>
+          <Route path="/connexion" element={<Connexion />} />
 
-        <Route element={<App />}>
-          <Route path="/" element={<Accueil />} />
+          <Route element={<RequireAuth />}>
+            <Route element={<App />}>
+              <Route path="/" element={<Accueil />} />
           <Route path="/administration" element={<Administration />} />
           <Route path="/mon-compte" element={<MonCompte />} />
 
@@ -86,6 +100,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/rh/mon-espace" element={<MonEspace />} />
           <Route path="/rh/organisation" element={<Organisation />} />
           <Route path="/rh/permissions" element={<Permissions />} />
+          <Route path="/rh/presences" element={<Presences />} />
           <Route path="/rh/retards" element={<Retards />} />
           <Route path="/rh/validations" element={<Validations />} />
 
@@ -133,13 +148,24 @@ createRoot(document.getElementById('root')!).render(
             <Route path="rapport" element={<Rapport />} />
           </Route>
 
-          <Route path="/planning" element={<TableauDeBordPlanning />} />
-          <Route path="/planning/clients" element={<Clients />} />
-          <Route path="/planning/idees-contenu" element={<IdeesContenu />} />
-          <Route path="/planning/tournages" element={<Tournages />} />
-          <Route path="/planning/publications" element={<Publications />} />
-        </Route>
-      </Routes>
+              <Route path="/planning" element={<TableauDeBordPlanning />} />
+              <Route path="/planning/clients" element={<Clients />} />
+              <Route path="/planning/idees-contenu" element={<IdeesContenu />} />
+              <Route path="/planning/tournages" element={<Tournages />} />
+              <Route path="/planning/publications" element={<Publications />} />
+
+              <Route path="/campagnes" element={<CampagnesTableauDeBord />} />
+              <Route path="/campagnes/ventes" element={<CampagnesVentes />} />
+              <Route path="/campagnes/enrolements" element={<CampagnesEnrolements />} />
+              <Route path="/campagnes/admin/campagnes" element={<CampagnesListe />} />
+              <Route path="/campagnes/admin/campagnes/creer" element={<CampagnesCreer />} />
+              <Route path="/campagnes/admin/campagnes/:id" element={<CampagnesDetail />} />
+              <Route path="/campagnes/performances" element={<CampagnesPerformances />} />
+              <Route path="/campagnes/mon-contrat" element={<CampagnesMonContrat />} />
+            </Route>
+          </Route>
+        </Routes>
+      </AuthProvider>
     </HashRouter>
   </StrictMode>,
 );

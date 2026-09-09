@@ -1,18 +1,40 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { ArrowRight, Eye, EyeOff, Globe, Lock, Mail, MapPin, Phone } from 'lucide-react';
+import { useAuth } from '../lib/auth/AuthContext';
 
 const PHOTOS = ['/login-1.jpg', '/login-2.jpg'];
 
 export default function Connexion() {
   const navigate = useNavigate();
+  const { identite, connecter } = useAuth();
   const [photoIndex, setPhotoIndex] = useState(0);
   const [motDePasseVisible, setMotDePasseVisible] = useState(false);
+  const [identifiant, setIdentifiant] = useState('');
+  const [motDePasse, setMotDePasse] = useState('');
+  const [enCours, setEnCours] = useState(false);
+  const [erreur, setErreur] = useState<string | null>(null);
 
   useEffect(() => {
     const minuteur = setInterval(() => setPhotoIndex((i) => (i + 1) % PHOTOS.length), 6000);
     return () => clearInterval(minuteur);
   }, []);
+
+  if (identite) return <Navigate to="/" replace />;
+
+  async function soumettre(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setEnCours(true);
+    setErreur(null);
+    try {
+      await connecter(identifiant, motDePasse);
+      navigate('/');
+    } catch {
+      setErreur('Identifiant ou mot de passe incorrect.');
+    } finally {
+      setEnCours(false);
+    }
+  }
 
   return (
     <div className="flex min-h-screen w-full bg-bg text-white">
@@ -98,20 +120,18 @@ export default function Connexion() {
           <h2 className="font-display text-[1.75rem] font-bold text-white drop-shadow-sm">Bon retour</h2>
           <p className="mt-1.5 text-sm text-white/75">Connectez-vous à votre espace GDA Hub</p>
 
-          <form
-            className="mt-8 flex flex-col gap-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              navigate('/');
-            }}
-          >
+          <form className="mt-8 flex flex-col gap-4" onSubmit={soumettre}>
             <div>
-              <label className="mb-1.5 block text-xs font-semibold text-white/80">Adresse professionnelle</label>
+              <label className="mb-1.5 block text-xs font-semibold text-white/80">Identifiant ou adresse professionnelle</label>
               <div className="relative">
                 <Mail size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
                 <input
-                  type="email"
+                  type="text"
+                  value={identifiant}
+                  onChange={(e) => setIdentifiant(e.target.value)}
                   placeholder="prenom.nom@gdamali.net"
+                  autoComplete="username"
+                  required
                   className="w-full rounded-xl border border-border bg-surface2 py-3 pl-10 pr-3.5 text-sm text-white placeholder:text-muted/70 transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
                 />
               </div>
@@ -127,7 +147,11 @@ export default function Connexion() {
                 <Lock size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
                 <input
                   type={motDePasseVisible ? 'text' : 'password'}
+                  value={motDePasse}
+                  onChange={(e) => setMotDePasse(e.target.value)}
                   placeholder="••••••••"
+                  autoComplete="current-password"
+                  required
                   className="w-full rounded-xl border border-border bg-surface2 py-3 pl-10 pr-10 text-sm text-white placeholder:text-muted/70 transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
                 />
                 <button
@@ -140,6 +164,8 @@ export default function Connexion() {
               </div>
             </div>
 
+            {erreur ? <p className="text-xs font-semibold text-red-400">{erreur}</p> : null}
+
             <label className="mt-1 flex w-fit items-center gap-2 text-xs text-white/75">
               <input type="checkbox" className="h-3.5 w-3.5 rounded border-border bg-surface2 accent-accent" />
               Rester connecté
@@ -147,10 +173,11 @@ export default function Connexion() {
 
             <button
               type="submit"
-              className="group mt-2 flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-bold text-black transition-transform hover:brightness-110 active:scale-[0.98]"
+              disabled={enCours}
+              className="group mt-2 flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-bold text-black transition-transform hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Se connecter
-              <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
+              {enCours ? 'Connexion...' : 'Se connecter'}
+              {!enCours && <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />}
             </button>
           </form>
 

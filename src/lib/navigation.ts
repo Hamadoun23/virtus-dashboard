@@ -3,7 +3,11 @@ import {
   Building2,
   Calendar,
   Citrus,
+  Clapperboard,
   ClipboardList,
+  Clock,
+  CreditCard,
+  FileSignature,
   FileText,
   FlaskConical,
   HardHat,
@@ -19,7 +23,9 @@ import {
   Settings,
   ShoppingCart,
   Sprout,
+  Trophy,
   UserCog,
+  UserPlus,
   UserRound,
   Users,
   Video,
@@ -34,12 +40,28 @@ export type NavItem = {
   icon: LucideIcon;
 };
 
+/** `app` identifie à quelle application métier ce groupe appartient — 'hub' pour les
+ * groupes visibles à la racine (accueil, board). Sert à n'afficher, une fois dans une
+ * appli, que sa propre navigation (voir Sidebar) : on quitte visuellement le hub. */
+export type AppKey = 'hub' | 'rh' | 'jus' | 'chantiers' | 'planning' | 'campagnes';
+
 export type NavGroup = {
   key: string;
   label: string;
   color: string;
+  app: AppKey;
   items: NavItem[];
 };
+
+/** Métadonnées du lanceur d'applications (écran d'accueil) et de l'en-tête de sidebar
+ * une fois dans une appli. `chemin` doit correspondre au premier `href` de ses groupes. */
+export const APPLICATIONS_HUB: { key: AppKey; nom: string; description: string; chemin: string; icon: LucideIcon; couleur: string }[] = [
+  { key: 'rh', nom: 'RH & Finance', description: 'Congés, présences, validations, annuaire', chemin: '/rh', icon: Users, couleur: 'bg-blue-400' },
+  { key: 'jus', nom: "Jus d'orange", description: 'Production, commercial, finance, reporting', chemin: '/jus/production', icon: Citrus, couleur: 'bg-amber-400' },
+  { key: 'chantiers', nom: 'Chantiers', description: 'Suivi de chantier, équipes, avancement', chemin: '/chantiers', icon: HardHat, couleur: 'bg-emerald-400' },
+  { key: 'planning', nom: 'Planning', description: 'Calendrier, tournages, publications', chemin: '/planning', icon: Calendar, couleur: 'bg-rose-400' },
+  { key: 'campagnes', nom: 'Campagnes', description: 'Ventes, enrôlements, campagnes bancaires', chemin: '/campagnes', icon: Clapperboard, couleur: 'bg-violet-400' },
+];
 
 /** Reprend fidèlement la structure réelle du hub (voir `frontend/src/rh/lib/navigation.ts`,
  * `frontend/src/jus/lib/nav.ts`, `frontend/src/planning/composants/espace-planning.tsx`) —
@@ -49,23 +71,27 @@ export const NAVIGATION: NavGroup[] = [
     key: 'accueil',
     label: 'Accueil',
     color: 'bg-accent',
-    items: [{ label: 'Tableau de bord', href: '/', icon: Home }],
+    app: 'hub',
+    items: [{ label: 'Mes applications', href: '/', icon: Home }],
   },
   {
     key: 'board',
     label: 'Board',
     color: 'bg-violet-400',
+    app: 'hub',
     items: [{ label: 'Administration', href: '/administration', icon: Building2 }],
   },
   {
     key: 'rh',
     label: 'RH & Finance',
     color: 'bg-blue-400',
+    app: 'rh',
     items: [
       { label: 'Tableau de bord', href: '/rh', icon: Home },
       { label: 'À valider', href: '/rh/validations', icon: ClipboardList },
       { label: 'Historique', href: '/rh/historique', icon: FileText },
       { label: 'Mes congés', href: '/rh/absences', icon: Calendar },
+      { label: 'Présences', href: '/rh/presences', icon: Clock },
       { label: 'Mes permissions', href: '/rh/permissions', icon: UserRound },
       { label: 'Signaler un retard', href: '/rh/retards', icon: HardHat },
       { label: 'Mes demandes', href: '/rh/mes-demandes', icon: ReceiptText },
@@ -78,6 +104,7 @@ export const NAVIGATION: NavGroup[] = [
     key: 'orange-direction',
     label: "Jus d'orange — Direction",
     color: 'bg-violet-400',
+    app: 'jus',
     items: [
       { label: 'Tableau de bord', href: '/jus/direction', icon: LayoutDashboard },
       { label: 'Utilisateurs', href: '/jus/direction/utilisateurs', icon: Users },
@@ -87,6 +114,7 @@ export const NAVIGATION: NavGroup[] = [
     key: 'orange-production',
     label: "Jus d'orange — Production",
     color: 'bg-amber-400',
+    app: 'jus',
     items: [
       { label: 'Tableau de bord', href: '/jus/production', icon: LayoutDashboard },
       { label: 'Producteurs', href: '/jus/production/producteurs', icon: UserRound },
@@ -103,6 +131,7 @@ export const NAVIGATION: NavGroup[] = [
     key: 'orange-commercial',
     label: "Jus d'orange — Commercial",
     color: 'bg-blue-400',
+    app: 'jus',
     items: [
       { label: 'Tableau de bord', href: '/jus/commercial', icon: LayoutDashboard },
       { label: 'Prospection', href: '/jus/commercial/prospection', icon: Map },
@@ -117,6 +146,7 @@ export const NAVIGATION: NavGroup[] = [
     key: 'orange-finance',
     label: "Jus d'orange — Finance",
     color: 'bg-emerald-400',
+    app: 'jus',
     items: [
       { label: 'Tableau de bord', href: '/jus/finance', icon: LayoutDashboard },
       { label: 'Trésorerie', href: '/jus/finance/tresorerie', icon: Landmark },
@@ -126,6 +156,7 @@ export const NAVIGATION: NavGroup[] = [
     key: 'orange-reporting',
     label: "Jus d'orange — Reporting",
     color: 'bg-rose-400',
+    app: 'jus',
     items: [
       { label: "Vue d'ensemble", href: '/jus/reporting', icon: Boxes },
       { label: 'Récolte', href: '/jus/reporting/recolte', icon: Sprout },
@@ -140,18 +171,34 @@ export const NAVIGATION: NavGroup[] = [
     key: 'chantiers',
     label: 'Chantiers',
     color: 'bg-emerald-400',
+    app: 'chantiers',
     items: [{ label: 'Suivi de chantier', href: '/chantiers', icon: HardHat }],
   },
   {
     key: 'planning',
     label: 'Planning',
     color: 'bg-rose-400',
+    app: 'planning',
     items: [
       { label: 'Tableau de bord', href: '/planning', icon: Home },
       { label: 'Clients', href: '/planning/clients', icon: Users },
       { label: 'Idées de contenu', href: '/planning/idees-contenu', icon: Lightbulb },
       { label: 'Tournages', href: '/planning/tournages', icon: Video },
       { label: 'Publications', href: '/planning/publications', icon: Megaphone },
+    ],
+  },
+  {
+    key: 'campagnes',
+    label: 'Campagnes',
+    color: 'bg-violet-400',
+    app: 'campagnes',
+    items: [
+      { label: 'Tableau de bord', href: '/campagnes', icon: Home },
+      { label: 'Mes ventes', href: '/campagnes/ventes', icon: CreditCard },
+      { label: 'Mes enrôlements', href: '/campagnes/enrolements', icon: UserPlus },
+      { label: 'Campagnes', href: '/campagnes/admin/campagnes', icon: Clapperboard },
+      { label: 'Performances', href: '/campagnes/performances', icon: Trophy },
+      { label: 'Mon contrat', href: '/campagnes/mon-contrat', icon: FileSignature },
     ],
   },
 ];
