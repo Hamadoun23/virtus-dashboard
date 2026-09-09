@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 import App from './App';
 import './index.css';
 import Accueil from './pages/Accueil';
@@ -61,7 +61,7 @@ import Validations from './pages/rh/Validations';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/connexion" element={<Connexion />} />
 
@@ -123,6 +123,6 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/planning/publications" element={<Publications />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   </StrictMode>,
 );
