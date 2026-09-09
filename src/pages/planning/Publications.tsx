@@ -14,7 +14,9 @@ export default function Publications() {
           p.client,
           p.canal,
           p.date,
-          <Badge tone={p.statut === 'Publiée' ? 'success' : 'warning'}>{p.statut}</Badge>,
+          <Badge tone={p.statut === 'Publiée' ? 'success' : p.statut === 'En retard' ? 'danger' : 'warning'}>
+            {p.statut}
+          </Badge>,
         ])}
       />
     </div>

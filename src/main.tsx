@@ -8,8 +8,16 @@ import Administration from './pages/Administration';
 import Connexion from './pages/Connexion';
 import MonCompte from './pages/MonCompte';
 
+import ChantierLayout from './pages/chantiers/ChantierLayout';
 import ChantiersDetail from './pages/chantiers/Detail';
+import Journal from './pages/chantiers/Journal';
 import ChantiersListe from './pages/chantiers/Liste';
+import Meteo from './pages/chantiers/Meteo';
+import Photos from './pages/chantiers/Photos';
+import Rapport from './pages/chantiers/Rapport';
+import SaisieDuJour from './pages/chantiers/SaisieDuJour';
+import Structure from './pages/chantiers/Structure';
+import Taches from './pages/chantiers/Taches';
 
 import Commercial from './pages/jus/Commercial';
 import Direction from './pages/jus/Direction';
@@ -114,7 +122,16 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/jus/reporting/distribution" element={<Distribution />} />
 
           <Route path="/chantiers" element={<ChantiersListe />} />
-          <Route path="/chantiers/:id" element={<ChantiersDetail />} />
+          <Route path="/chantiers/:id" element={<ChantierLayout />}>
+            <Route index element={<ChantiersDetail />} />
+            <Route path="saisie" element={<SaisieDuJour />} />
+            <Route path="taches" element={<Taches />} />
+            <Route path="photos" element={<Photos />} />
+            <Route path="structure" element={<Structure />} />
+            <Route path="journal" element={<Journal />} />
+            <Route path="meteo" element={<Meteo />} />
+            <Route path="rapport" element={<Rapport />} />
+          </Route>
 
           <Route path="/planning" element={<TableauDeBordPlanning />} />
           <Route path="/planning/clients" element={<Clients />} />

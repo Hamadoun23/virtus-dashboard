@@ -10,8 +10,8 @@ export default function Connexion() {
     >
       <div className="w-full max-w-sm rounded-3xl border border-border bg-surface p-8 backdrop-blur-xl">
         <div className="mb-6 flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent text-black">
-            <span className="text-lg font-black">↗</span>
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white p-1.5 shadow">
+            <img src="/logo-gda.png" alt="GD&A" className="h-full w-full object-contain" />
           </div>
           <div>
             <p className="font-display text-lg font-bold tracking-tight text-white">GDA Hub</p>

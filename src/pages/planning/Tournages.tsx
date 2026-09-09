@@ -1,7 +1,9 @@
 import { Video } from 'lucide-react';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Badge, TableVirtus } from '../../components/ui/Table';
-import { tournages } from './donnees';
+import { tournagesListe } from './donnees';
+
+const TONE = { Planifié: 'success', 'En retard': 'danger', 'À confirmer': 'warning' } as const;
 
 export default function Tournages() {
   return (
@@ -9,13 +11,7 @@ export default function Tournages() {
       <PageHeader icon={Video} titre="Tournages" sousTitre="Planifiés et à confirmer" />
       <TableVirtus
         colonnes={['Référence', 'Client', 'Date', 'Lieu', 'Statut']}
-        lignes={tournages.map((t) => [
-          t.id,
-          t.client,
-          t.date,
-          t.lieu,
-          <Badge tone={t.statut === 'Planifié' ? 'success' : 'warning'}>{t.statut}</Badge>,
-        ])}
+        lignes={tournagesListe.map((t) => [t.id, t.client, t.date, t.lieu, <Badge tone={TONE[t.statut]}>{t.statut}</Badge>])}
       />
     </div>
   );

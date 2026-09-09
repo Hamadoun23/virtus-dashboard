@@ -16,8 +16,8 @@ export function Sidebar() {
   return (
     <aside className="flex h-screen w-72 shrink-0 flex-col overflow-hidden border-r border-border bg-surface backdrop-blur-xl">
       <div className="flex items-center gap-2 px-5 py-5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent text-black">
-          <span className="text-lg font-black">↗</span>
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white p-1.5 shadow">
+          <img src="/logo-gda.png" alt="GD&A" className="h-full w-full object-contain" />
         </div>
         <div className="leading-tight">
           <p className="font-display text-lg font-bold tracking-tight text-white">GDA Hub</p>
