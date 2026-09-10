@@ -1,8 +1,10 @@
 import { Award, Clapperboard, TrendingUp, Users } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
+import { CircularProgress } from '../../components/ui/CircularProgress';
 import { EtatChargement, EtatErreur } from '../../components/ui/EtatRequete';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { StatTile } from '../../components/ui/StatTile';
+import { TrendChart } from '../../components/ui/TrendChart';
 import { useApi } from '../../lib/hooks/useApi';
 import { obtenirTableauDeBord } from '../../lib/api/campagnes';
 
@@ -43,6 +45,19 @@ export default function TableauDeBord() {
             <StatTile icon={TrendingUp} valeur={d.ventesMois} libelle="Ventes ce mois" teinte="#60a5fa" />
             <StatTile icon={Clapperboard} valeur={d.campagnesEnCours} libelle="Campagnes en cours" teinte="#ff8a4c" />
             <StatTile icon={Users} valeur={d.commerciauxCount} libelle="Commerciaux" teinte="#a78bfa" />
+          </div>
+
+          <div className="grid grid-cols-[1fr_auto] gap-4">
+            {d.venteTrend.length > 0 && (
+              <Card>
+                <h2 className="mb-3 text-sm font-bold text-white">Évolution des ventes</h2>
+                <TrendChart donnees={d.venteTrend.map((valeur, i) => ({ label: String(i + 1), valeur }))} />
+              </Card>
+            )}
+            <Card className="flex flex-col items-center justify-center gap-2">
+              <CircularProgress progress={d.pctCommerciauxActifs} gradientId="campagnes-commerciaux-actifs-gradient" />
+              <p className="text-center text-xs text-muted">Commerciaux actifs</p>
+            </Card>
           </div>
 
           <Card>

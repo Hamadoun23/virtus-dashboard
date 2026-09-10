@@ -1,6 +1,7 @@
 import { AlertTriangle, Calendar, ClipboardList, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
+import { CircularProgress } from '../../components/ui/CircularProgress';
 import { EtatChargement, EtatErreur } from '../../components/ui/EtatRequete';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { StatTile } from '../../components/ui/StatTile';
@@ -28,6 +29,24 @@ export default function TableauDeBordRh() {
         titre="RH & Finance"
         sousTitre={utilisateur ? `Bonjour ${utilisateur.first_name}, voici ce qui attend votre décision` : 'Ce qui attend votre décision'}
       />
+
+      {solde.donnees && (
+        <Card className="mb-4 flex items-center gap-4">
+          <CircularProgress
+            progress={(solde.donnees.jours_restants / (solde.donnees.jours_acquis + solde.donnees.jours_reportes || 1)) * 100}
+            size={64}
+            strokeWidth={6}
+            gradientId="rh-tableau-de-bord-conges-gradient"
+            label={`${solde.donnees.jours_restants}j`}
+          />
+          <div>
+            <p className="text-sm font-semibold text-white">
+              {solde.donnees.jours_restants} jours restants sur {solde.donnees.jours_acquis + solde.donnees.jours_reportes}
+            </p>
+            <p className="text-xs text-muted">{solde.donnees.jours_pris} jours déjà pris cette année</p>
+          </div>
+        </Card>
+      )}
 
       <div className="grid grid-cols-3 gap-4">
         <StatTile icon={ClipboardList} valeur={liste.length} libelle="Dossiers à valider" teinte="#ff8a4c" />
