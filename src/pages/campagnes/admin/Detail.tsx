@@ -28,15 +28,44 @@ export default function Detail() {
   const [reprogrammationOuverte, setReprogrammationOuverte] = useState(false);
   const [nouveauDebut, setNouveauDebut] = useState('');
   const [nouvelleFin, setNouvelleFin] = useState('');
+  const [motifReprogrammation, setMotifReprogrammation] = useState('');
 
   const [editionOuverte, setEditionOuverte] = useState(false);
   const [primeVendeur, setPrimeVendeur] = useState('');
   const [aideMontant, setAideMontant] = useState('');
 
+  // Le backend trace chaque arrêt/annulation/reprogrammation avec un motif
+  // (10 caractères minimum) — demandé au clic plutôt que via un champ dédié,
+  // pour rester au plus simple sur ces deux actions ponctuelles.
+  function demanderMotif(): string | null {
+    const motif = window.prompt('Motif (10 caractères minimum) :');
+    if (motif === null) return null;
+    if (motif.trim().length < 10) {
+      window.alert('Le motif doit contenir au moins 10 caractères.');
+      return null;
+    }
+    return motif.trim();
+  }
+
+  async function arreter() {
+    const motif = demanderMotif();
+    if (motif === null) return;
+    await arret.executer(campagneId, motif);
+    detail.recharger();
+  }
+
+  async function annuler() {
+    const motif = demanderMotif();
+    if (motif === null) return;
+    await annulation.executer(campagneId, motif);
+    detail.recharger();
+  }
+
   async function reprogrammer(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    await reprogrammation.executer(campagneId, nouveauDebut, nouvelleFin);
+    await reprogrammation.executer(campagneId, nouveauDebut, nouvelleFin, motifReprogrammation);
     setReprogrammationOuverte(false);
+    setMotifReprogrammation('');
     detail.recharger();
   }
 
@@ -73,14 +102,14 @@ export default function Detail() {
           {campagne.peut_piloter && (
             <>
               <button
-                onClick={() => arret.executer(campagneId).then(() => detail.recharger())}
+                onClick={arreter}
                 disabled={arret.enCours}
                 className="flex items-center gap-1.5 rounded-lg border border-border bg-surface2 px-3 py-1.5 text-xs font-semibold text-white hover:border-accent"
               >
                 <Ban size={13} /> Arrêter
               </button>
               <button
-                onClick={() => annulation.executer(campagneId).then(() => detail.recharger())}
+                onClick={annuler}
                 disabled={annulation.enCours}
                 className="flex items-center gap-1.5 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-semibold text-red-400"
               >
@@ -131,6 +160,16 @@ export default function Detail() {
               onChange={(e) => setNouvelleFin(e.target.value)}
               required
               className="rounded-lg border border-border bg-surface2 px-2.5 py-1.5 text-sm text-white focus:border-accent focus:outline-none"
+            />
+          </div>
+          <div className="flex-1">
+            <label className="mb-1 block text-xs font-semibold text-muted">Motif (10 caractères min.)</label>
+            <input
+              value={motifReprogrammation}
+              onChange={(e) => setMotifReprogrammation(e.target.value)}
+              required
+              minLength={10}
+              className="w-full rounded-lg border border-border bg-surface2 px-2.5 py-1.5 text-sm text-white focus:border-accent focus:outline-none"
             />
           </div>
           <button

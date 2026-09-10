@@ -33,7 +33,7 @@ export function listerDepartements() {
 
 // --- Demandes d'absence (congés, retards, permissions) ----------------------
 
-export type StatutDemande = 'BROUILLON' | 'EN_VALIDATION' | 'APPROUVE' | 'REJETE' | 'CLOTURE';
+export type StatutDemande = 'BROUILLON' | 'EN_VALIDATION' | 'APPROUVE' | 'REJETE' | 'CLOTURE' | 'ANNULE';
 
 export type EtapeValidation = {
   id: number;

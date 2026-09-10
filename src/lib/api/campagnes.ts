@@ -242,20 +242,28 @@ export async function obtenirCampagne(id: number, tab?: string) {
   return props;
 }
 
-export async function arreterCampagne(id: number) {
-  const { props } = await campagnesFetch<{ flash: Flash }>(`/admin/campagnes/${id}/arreter`, { method: 'POST' });
+/** `description` : motif tracé dans l'historique de la campagne — le backend
+ * l'exige (10 caractères minimum), voir `_changer_statut` côté Django. */
+export async function arreterCampagne(id: number, description: string) {
+  const { props } = await campagnesFetch<{ flash: Flash }>(`/admin/campagnes/${id}/arreter`, {
+    method: 'POST',
+    corps: { description },
+  });
   return props;
 }
 
-export async function annulerCampagne(id: number) {
-  const { props } = await campagnesFetch<{ flash: Flash }>(`/admin/campagnes/${id}/annuler`, { method: 'POST' });
+export async function annulerCampagne(id: number, description: string) {
+  const { props } = await campagnesFetch<{ flash: Flash }>(`/admin/campagnes/${id}/annuler`, {
+    method: 'POST',
+    corps: { description },
+  });
   return props;
 }
 
-export async function reprogrammerCampagne(id: number, date_debut: string, date_fin: string) {
+export async function reprogrammerCampagne(id: number, date_debut: string, date_fin: string, description: string) {
   const { props } = await campagnesFetch<{ flash: Flash }>(`/admin/campagnes/${id}/reprogrammer`, {
     method: 'POST',
-    corps: { date_debut, date_fin },
+    corps: { date_debut, date_fin, description },
   });
   return props;
 }

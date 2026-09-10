@@ -14,11 +14,16 @@ function LigneTache({ chantierId, item, recharger }: { chantierId: number; item:
   const modification = useAction(modifierMiseAJour);
   const saisie = item.daily_update ? modification : creation;
 
+  const progressionEnHausse = progress > item.effective_progress;
+
   async function enregistrer() {
+    // Le backend exige une justification (`progress_note`) dès que l'avancement
+    // augmente — le champ « Commentaire » sert cette double fonction ici.
+    const payload = { progress, comment: commentaire || undefined, progress_note: commentaire || undefined };
     if (item.daily_update) {
-      await modification.executer(chantierId, item.daily_update.id, { progress, comment: commentaire || undefined });
+      await modification.executer(chantierId, item.daily_update.id, payload);
     } else {
-      await creation.executer(chantierId, { task_id: item.task.id, progress, comment: commentaire || undefined });
+      await creation.executer(chantierId, { task_id: item.task.id, ...payload });
     }
     recharger();
   }
@@ -48,7 +53,9 @@ function LigneTache({ chantierId, item, recharger }: { chantierId: number; item:
           />
         </div>
         <div className="flex-[2]">
-          <label className="mb-1 block text-xs font-semibold text-muted">Commentaire</label>
+          <label className="mb-1 block text-xs font-semibold text-muted">
+            Commentaire{progressionEnHausse ? ' (obligatoire pour justifier la hausse)' : ''}
+          </label>
           <input
             value={commentaire}
             onChange={(e) => setCommentaire(e.target.value)}
@@ -58,7 +65,7 @@ function LigneTache({ chantierId, item, recharger }: { chantierId: number; item:
         </div>
         <button
           onClick={enregistrer}
-          disabled={saisie.enCours}
+          disabled={saisie.enCours || (progressionEnHausse && !commentaire.trim())}
           className="rounded-lg bg-accent px-3 py-1.5 text-xs font-bold text-black disabled:opacity-60"
         >
           {saisie.enCours ? 'Envoi...' : item.daily_update ? 'Mettre à jour' : 'Enregistrer'}
