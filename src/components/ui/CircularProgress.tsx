@@ -8,7 +8,7 @@ export function CircularProgress({
   progress: number;
   size?: number;
   strokeWidth?: number;
-  label?: string;
+  label?: React.ReactNode;
   gradientId: string;
 }) {
   const radius = (size - strokeWidth) / 2;
