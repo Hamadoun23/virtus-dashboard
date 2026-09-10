@@ -70,13 +70,25 @@ TEMPLATES = [
     }
 ]
 
-DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL", ""),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
+# Sans DATABASE_URL (développement local sans Postgres), on retombe sur
+# SQLite plutôt que de laisser dj_database_url échouer sur une URL vide —
+# même convention que les services qui gèrent leur DATABASES eux-mêmes
+# (voir backend/financerh/config/settings.py).
+if os.environ.get("DATABASE_URL", "").startswith("postgres"):
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=os.environ["DATABASE_URL"],
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [

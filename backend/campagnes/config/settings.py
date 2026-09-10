@@ -113,26 +113,38 @@ TEMPLATES = [
 # Base de données
 # --------------------------------------------------------------------------
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "HOST": env("DB_HOST", "127.0.0.1"),
-        "PORT": env("DB_PORT", "3307"),
-        "NAME": env("DB_NAME", "bdm_dev"),
-        "USER": env("DB_USER", "root"),
-        "PASSWORD": env("DB_PASSWORD", ""),
-        "OPTIONS": {
-            "charset": "utf8mb4",
-            # Même mode SQL que Laravel : les agrégats des rapports sont écrits
-            # pour un MySQL sans ONLY_FULL_GROUP_BY.
-            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
-        "TEST": {
-            "CHARSET": "utf8mb4",
-            "COLLATION": "utf8mb4_unicode_ci",
-        },
+# Sans DB_HOST (développement local sans MySQL), on retombe sur SQLite — même
+# convention que les autres services du hub (voir backend/financerh/config/
+# settings.py). Le mode SQL strict et le charset utf8mb4 n'ont de sens qu'avec
+# un vrai MySQL, donc ils restent dans la branche MySQL uniquement.
+if env("DB_HOST"):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "HOST": env("DB_HOST", "127.0.0.1"),
+            "PORT": env("DB_PORT", "3307"),
+            "NAME": env("DB_NAME", "bdm_dev"),
+            "USER": env("DB_USER", "root"),
+            "PASSWORD": env("DB_PASSWORD", ""),
+            "OPTIONS": {
+                "charset": "utf8mb4",
+                # Même mode SQL que Laravel : les agrégats des rapports sont écrits
+                # pour un MySQL sans ONLY_FULL_GROUP_BY.
+                "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+            "TEST": {
+                "CHARSET": "utf8mb4",
+                "COLLATION": "utf8mb4_unicode_ci",
+            },
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -212,7 +224,7 @@ USE_TZ = False
 STATIC_URL = f"{CHEMIN_BASE}/static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
-    REPO_DIR / "frontend" / "dist",
+    REPO_DIR / "campagnes-frontend" / "dist",
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
@@ -230,7 +242,7 @@ INERTIA_LAYOUT = "app.html"
 # (HMR), en production ils sont lus dans frontend/dist via le manifeste.
 VITE_DEV = env_bool("VITE_DEV", DEBUG)
 VITE_DEV_SERVER = env("VITE_DEV_SERVER", "http://localhost:5173")
-VITE_MANIFEST_PATH = REPO_DIR / "frontend" / "dist" / ".vite" / "manifest.json"
+VITE_MANIFEST_PATH = REPO_DIR / "campagnes-frontend" / "dist" / ".vite" / "manifest.json"
 
 # En dev, le serveur Vite est une origine distincte de Django.
 CSRF_TRUSTED_ORIGINS = [
